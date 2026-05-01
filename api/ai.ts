@@ -1,7 +1,7 @@
 // Vercel-style serverless handler. Used by:
 //  - Vercel runtime in production (default export)
 //  - Vite dev server middleware (re-imported in vite.config.ts)
-import { callAnthropic, type AIRequestBody } from './_anthropic'
+import { callAnthropic, type AIRequestBody } from '../api-lib/anthropic.js'
 
 interface MinimalReq {
   method?: string

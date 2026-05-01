@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { defineConfig, loadEnv, type Connect, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
-import { callAnthropic, type AIRequestBody } from './api/_anthropic'
+import { callAnthropic, type AIRequestBody } from './api-lib/anthropic.js'
 
 // loadEnv lets process.env shadow the .env file. Some shells (Claude Code,
 // CI runners) export ANTHROPIC_API_KEY="" to defend against accidental

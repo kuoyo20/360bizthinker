@@ -4,7 +4,7 @@ import {
   isValidPromptKey,
   renderPrompt,
   type PromptKey,
-} from './_prompts'
+} from './prompts.js'
 
 export interface AIRequestBody {
   promptKey: string
