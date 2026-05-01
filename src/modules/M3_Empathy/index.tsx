@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useStore } from '@/store/useStore'
+import { useM3Completion, useStore } from '@/store/useStore'
 import { Badge } from '@/components/ui/badge'
 import { IndustryTemplateSelect } from './IndustryTemplateSelect'
 import { OrgChart } from './OrgChart'
@@ -7,7 +7,7 @@ import { EmpathyMapEditor } from './EmpathyMapEditor'
 import { AIConflictTrigger } from './AIConflictTrigger'
 
 export function M3Empathy() {
-  const completion = useStore((s) => s.getM3Completion())
+  const completion = useM3Completion()
   const analysis = useStore((s) => s.m3_empathy.analysis)
   const hasAnalysis = !!(analysis.conflicts || analysis.excited_resistant || analysis.attack_path)
 

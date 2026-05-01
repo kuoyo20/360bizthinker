@@ -1,12 +1,12 @@
 import { JourneyGrid } from './JourneyGrid'
 import { EmotionCurve } from './EmotionCurve'
 import { AIPeaksTrigger } from './AIPeaksTrigger'
-import { useStore } from '@/store/useStore'
+import { useM4Completion, useStore } from '@/store/useStore'
 import { Badge } from '@/components/ui/badge'
 import { EMOTION_PEAK_STAGES } from '@/lib/constants'
 
 export function M4Journey() {
-  const m4Progress = useStore((s) => s.getM4Completion())
+  const m4Progress = useM4Completion()
   const peaks = useStore((s) => s.m4_journey.emotion_peaks)
   const setEmotionPeak = useStore((s) => s.setEmotionPeak)
 

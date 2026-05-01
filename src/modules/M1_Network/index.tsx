@@ -1,4 +1,4 @@
-import { useStore } from '@/store/useStore'
+import { useM1Completion, useStore } from '@/store/useStore'
 import { Badge } from '@/components/ui/badge'
 import type { M1CellKey, M1ListKey } from '@/lib/types'
 import { MatrixCell } from './MatrixCell'
@@ -34,7 +34,7 @@ const LISTS: Array<{ key: M1ListKey; title: string; hint: string }> = [
 ]
 
 export function M1Network() {
-  const completion = useStore((s) => s.getM1Completion())
+  const completion = useM1Completion()
   const lists = useStore((s) => ({
     most_contacted_5: s.m1_network.most_contacted_5,
     go_to_help_5: s.m1_network.go_to_help_5,

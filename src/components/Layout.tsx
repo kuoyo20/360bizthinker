@@ -2,14 +2,20 @@ import { useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { Sidebar, type ProgressMap } from './Sidebar'
 import { ResetDialog } from './ResetDialog'
-import { useStore } from '@/store/useStore'
+import {
+  useM1Completion,
+  useM2Completion,
+  useM3Completion,
+  useM4Completion,
+  useStore,
+} from '@/store/useStore'
 
 export function Layout() {
   const navigate = useNavigate()
-  const m1Progress = useStore((s) => s.getM1Completion())
-  const m2Progress = useStore((s) => s.getM2Completion())
-  const m3Progress = useStore((s) => s.getM3Completion())
-  const m4Progress = useStore((s) => s.getM4Completion())
+  const m1Progress = useM1Completion()
+  const m2Progress = useM2Completion()
+  const m3Progress = useM3Completion()
+  const m4Progress = useM4Completion()
   const reset = useStore((s) => s.reset)
   const [resetOpen, setResetOpen] = useState(false)
 

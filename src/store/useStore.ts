@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { useShallow } from 'zustand/react/shallow'
 import type {
   Attitude,
   DimensionKey,
@@ -401,6 +402,7 @@ export const useStore = create<Store>()(
         return { meta, m1_network, m2_mvp, m3_empathy, m4_journey }
       },
     }),
+    // ↓ persist config below ↓
     {
       name: STORAGE_KEY,
       version: 3,
@@ -424,3 +426,15 @@ export const useStore = create<Store>()(
     },
   ),
 )
+
+// Completion selectors return new {filled,total} objects each call;
+// wrap with useShallow so React doesn't see a fresh ref every render
+// (Zustand v5 strict-equals → infinite loop without this — React error #185).
+export const useM1Completion = () =>
+  useStore(useShallow((s) => s.getM1Completion()))
+export const useM2Completion = () =>
+  useStore(useShallow((s) => s.getM2Completion()))
+export const useM3Completion = () =>
+  useStore(useShallow((s) => s.getM3Completion()))
+export const useM4Completion = () =>
+  useStore(useShallow((s) => s.getM4Completion()))

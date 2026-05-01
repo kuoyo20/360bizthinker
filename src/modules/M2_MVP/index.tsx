@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronRight } from 'lucide-react'
-import { useStore } from '@/store/useStore'
+import { useM2Completion, useStore } from '@/store/useStore'
 import { Badge } from '@/components/ui/badge'
 import type { M2FieldKey } from '@/lib/types'
 import { AIVisionTrigger } from './AIVisionTrigger'
@@ -9,7 +9,7 @@ import { AIPositioningTrigger } from './AIPositioningTrigger'
 import { cn } from '@/lib/utils'
 
 export function M2MVP() {
-  const completion = useStore((s) => s.getM2Completion())
+  const completion = useM2Completion()
   const m2 = useStore((s) => s.m2_mvp)
   const setField = useStore((s) => s.setM2Field)
   const [qcOpen, setQcOpen] = useState(!!m2.qc_quantify || !!m2.qc_celebrity)
