@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { MODULES } from '@/lib/modules'
 import { Badge } from '@/components/ui/badge'
+import { MxLockup } from '@/components/MxLogo'
 import { useStore } from '@/store/useStore'
 import { cn } from '@/lib/utils'
 
@@ -93,8 +94,9 @@ export function Overview() {
         })}
       </div>
 
-      <footer className="mt-16 text-center text-xs text-ink-muted font-mono">
-        Sales Strategist · v0.3 · Yo Workshop
+      <footer className="mt-16 flex items-center justify-center gap-3 opacity-60">
+        <MxLockup size="sm" variant="compact" />
+        <span className="text-xs text-ink-muted font-mono">·  Sales Strategist v0.6  ·  Yo Workshop</span>
       </footer>
     </div>
   )

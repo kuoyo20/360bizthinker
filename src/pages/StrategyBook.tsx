@@ -3,6 +3,7 @@ import { Download, ArrowLeft, Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useStore } from '@/store/useStore'
 import { Button } from '@/components/ui/button'
+import { MxLockup, MxSigil } from '@/components/MxLogo'
 import { STAGES } from '@/lib/types'
 import { EMOTION_PEAK_STAGES, INDUSTRY_TEMPLATES } from '@/lib/constants'
 import { exportStrategyBookPDF } from '@/lib/pdf'
@@ -66,17 +67,25 @@ export function StrategyBook() {
         id={PDF_ELEMENT_ID}
         className="bg-paper-card border border-line-light rounded-lg p-10 shadow-sm space-y-8"
       >
-        <header className="border-b-2 border-brand pb-4">
-          <div className="flex items-baseline justify-between flex-wrap gap-2">
-            <div>
-              <h1 className="font-serif text-4xl font-bold text-ink-primary">銷售策略書</h1>
-              <p className="text-ink-secondary mt-1 text-sm">
-                {userName || '(未填學員姓名)'} ·{' '}
-                {INDUSTRY_TEMPLATES[m3.industry_template]?.label || '未選產業'} · {today}
-              </p>
+        <header className="border-b-2 border-brand pb-4 relative">
+          <div className="flex items-start justify-between flex-wrap gap-3">
+            <div className="flex items-start gap-4">
+              <MxSigil className="h-14 w-12 text-brand shrink-0 mt-1" />
+              <div>
+                <h1 className="font-serif text-4xl font-bold text-ink-primary leading-tight">銷售策略書</h1>
+                <p className="text-ink-secondary mt-1 text-sm">
+                  {userName || '(未填學員姓名)'} ·{' '}
+                  {INDUSTRY_TEMPLATES[m3.industry_template]?.label || '未選產業'} · {today}
+                </p>
+              </div>
             </div>
-            <div className="font-mono text-xs text-ink-muted">Sales Strategist · Yo Workshop</div>
+            <div className="text-right">
+              <MxLockup size="sm" variant="compact" className="opacity-80" />
+              <div className="font-mono text-[10px] text-ink-muted mt-0.5">Yo Workshop · Sales Strategist</div>
+            </div>
           </div>
+          {/* gold accent line for warmth */}
+          <div className="absolute -bottom-[2px] left-0 h-[2px] w-24 bg-accent-gold" />
         </header>
 
         {/* 我是誰 */}
@@ -263,8 +272,11 @@ export function StrategyBook() {
           </div>
         </section>
 
-        <footer className="border-t border-line-light pt-3 text-center text-[10px] font-mono text-ink-muted">
-          印製日期:{today} · Sales Strategist · Yo Workshop · v0.5
+        <footer className="border-t border-line-light pt-3 flex items-center justify-between flex-wrap gap-2">
+          <span className="text-[10px] font-mono text-ink-muted">
+            印製日期:{today} · Sales Strategist v0.6
+          </span>
+          <MxLockup size="sm" variant="compact" className="opacity-50" />
         </footer>
       </article>
     </div>

@@ -75,7 +75,7 @@ export function EmotionCurve() {
         ))}
 
         {/* curve */}
-        <path d={path} stroke="#1E3A5F" strokeWidth={2.5} fill="none" strokeLinecap="round" />
+        <path d={path} stroke="#21362C" strokeWidth={2.5} fill="none" strokeLinecap="round" />
 
         {/* points */}
         {POINTS.map((p, i) => {
@@ -88,7 +88,7 @@ export function EmotionCurve() {
                 cx={x}
                 cy={y}
                 r={isPeak ? 7 : 4}
-                fill={isPeak ? '#A8842C' : '#1E3A5F'}
+                fill={isPeak ? '#A8842C' : '#21362C'}
                 stroke="#FFFFFF"
                 strokeWidth={2}
               />

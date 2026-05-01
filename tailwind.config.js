@@ -10,29 +10,38 @@ export default {
     },
     extend: {
       colors: {
+        // Paper background — warm beige base, keeps the workshop tool from
+        // feeling like a SaaS dashboard.
         paper: {
           DEFAULT: '#FBF9F5',
           card: '#FFFFFF',
+          warm: '#F5F1E8', // slightly warmer cream for inset blocks
         },
+        // Ink (text) — warm deep, not pure black.
         ink: {
-          primary: '#1A1A1A',
-          secondary: '#4A4A4A',
-          muted: '#8B8B8B',
+          primary: '#1A2620',
+          secondary: '#4A554F',
+          muted: '#8B928E',
         },
+        // Brand — Miracle X CI: PANTONE 5605C / #21362C
         brand: {
-          DEFAULT: '#1E3A5F',
-          hover: '#15263F',
-          light: '#E8EDF3',
+          DEFAULT: '#21362C',
+          hover: '#15241D',
+          light: '#E5EBE6', // soft sage tint for hover states / table headers
+          subtle: '#F0F3F0', // even softer for striping
         },
+        // Accents — gold keeps everything warm; red/green for state.
         accent: {
           red: '#7C2D2D',
-          green: '#2D5F3F',
-          gold: '#A8842C',
+          green: '#3F6B4F', // success state, slightly brighter than brand
+          gold: '#A8842C', // AI / 高峰 / 重點 — warmth anchor
+          goldSoft: '#D9C58A', // backgrounds / borders for accent zones
         },
         line: {
-          light: '#E8E8E8',
-          medium: '#D0D0D0',
+          light: '#E8E5DE', // very light warm grey
+          medium: '#CFCDC5',
         },
+        // shadcn shims (CSS vars) — kept for shadcn primitives
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

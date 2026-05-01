@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Download, RotateCcw } from 'lucide-react'
 import { MODULES } from '@/lib/modules'
 import { Badge } from '@/components/ui/badge'
+import { MxLockup } from '@/components/MxLogo'
 import { cn } from '@/lib/utils'
 
 export interface ProgressMap {
@@ -20,8 +21,12 @@ interface SidebarProps {
 export function Sidebar({ progress, onExport, onReset }: SidebarProps) {
   return (
     <aside className="w-60 shrink-0 border-r border-line-light bg-paper-card flex flex-col">
-      <div className="px-5 py-6 border-b border-line-light">
-        <div className="font-serif text-xl font-bold text-brand">銷售軍師</div>
+      <div className="px-5 py-5 border-b border-line-light">
+        <MxLockup size="sm" variant="compact" className="opacity-70 mb-3" />
+        <div className="flex items-baseline gap-2">
+          <div className="font-serif text-xl font-bold text-brand">銷售軍師</div>
+          <span className="text-[10px] text-accent-gold font-mono uppercase tracking-wider">v0.6</span>
+        </div>
         <div className="text-xs text-ink-muted mt-0.5 font-mono">Sales Strategist · Yo</div>
       </div>
 
