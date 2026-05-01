@@ -5,12 +5,19 @@ import { ResetDialog } from './ResetDialog'
 import { useStore } from '@/store/useStore'
 
 export function Layout() {
+  const m1Progress = useStore((s) => s.getM1Completion())
+  const m2Progress = useStore((s) => s.getM2Completion())
   const m3Progress = useStore((s) => s.getM3Completion())
   const m4Progress = useStore((s) => s.getM4Completion())
   const reset = useStore((s) => s.reset)
   const [resetOpen, setResetOpen] = useState(false)
 
-  const progress: ProgressMap = { m3: m3Progress, m4: m4Progress }
+  const progress: ProgressMap = {
+    m1: m1Progress,
+    m2: m2Progress,
+    m3: m3Progress,
+    m4: m4Progress,
+  }
 
   const handleExport = () => {
     const state = useStore.getState().exportState()

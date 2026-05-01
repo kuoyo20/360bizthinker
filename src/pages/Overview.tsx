@@ -6,12 +6,14 @@ import { useStore } from '@/store/useStore'
 import { cn } from '@/lib/utils'
 
 export function Overview() {
+  const m1Progress = useStore((s) => s.getM1Completion())
+  const m2Progress = useStore((s) => s.getM2Completion())
   const m3Progress = useStore((s) => s.getM3Completion())
   const m4Progress = useStore((s) => s.getM4Completion())
 
   const progressFor: Record<'m1' | 'm2' | 'm3' | 'm4', { filled: number; total: number } | null> = {
-    m1: null,
-    m2: null,
+    m1: m1Progress,
+    m2: m2Progress,
     m3: m3Progress,
     m4: m4Progress,
   }

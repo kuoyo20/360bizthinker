@@ -18,7 +18,7 @@ export const MODULES: ModuleDef[] = [
     description: '經歷 / 學歷 / 閱歷 3×3 矩陣',
     path: '/m1',
     icon: Users,
-    enabled: false,
+    enabled: true,
   },
   {
     id: 'm2',
@@ -27,7 +27,7 @@ export const MODULES: ModuleDef[] = [
     description: 'Market / Vision / Product',
     path: '/m2',
     icon: Target,
-    enabled: false,
+    enabled: true,
   },
   {
     id: 'm3',

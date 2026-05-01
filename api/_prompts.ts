@@ -21,6 +21,10 @@ export const SYSTEM_PROMPT = `你是 Yo 的銷售策略助手,協助學員應用
 6. 如果學員尚未填寫某些上下文(顯示為「尚未填寫」),請用通用銷售情境給建議,不要捏造學員的產品或客戶細節`
 
 export type PromptKey =
+  | 'm1_network'
+  | 'm2_vision'
+  | 'm2_product'
+  | 'm2_positioning'
   | 'm3_pain_points'
   | 'm3_conflict_analysis'
   | 'm4_questions'
@@ -34,6 +38,97 @@ interface PromptDef {
 }
 
 export const PROMPTS: Record<PromptKey, PromptDef> = {
+  m1_network: {
+    requiredVars: ['cell_label', 'existing_content'],
+    expectedShape:
+      '{ "directions": [{ "label": "...", "summary": "...", "next_step": "...", "framework_link": "..." }, ...] }',
+    template: `學員正在看「人脈三歷」的這一格:{{cell_label}}
+
+學員填的「現有」人脈:
+{{existing_content}}
+
+請根據這個現有人脈基礎,給 3 個「如何開發新人脈」的具體方向。
+每個方向必須:
+- label:<10 字方向名
+- summary:<60 字,告訴他這個方向為什麼有效(以現有為跳板)
+- next_step:<30 字,告訴他「這週可以做的具體一個動作」(可執行)
+- framework_link:對應到人脈三歷的哪一格,或工作坊其他框架(同理心地圖 / M.V.P / 客戶經營旅程)
+
+如果學員「現有」是空的,請依「{{cell_label}}」這個類別的常見開發路徑給通用建議。
+
+回傳 JSON,結構嚴格如下,不要任何其他文字:
+{ "directions": [{ "label": "...", "summary": "...", "next_step": "...", "framework_link": "..." }, { ... }, { ... }] }`,
+  },
+
+  m2_vision: {
+    requiredVars: ['market_target'],
+    expectedShape:
+      '{ "directions": [{ "label": "...", "summary": "...", "next_step": "...", "framework_link": "..." }, ...] }',
+    template: `學員的目標市場:{{market_target}}
+
+請給 3 個感性溝通方向(願景 / 使命 / 信仰層次),每個方向描述「品牌想讓客戶感受到的核心情感」。
+
+參考範例的層次:
+- 7-11「全家就是你家」→ 家的溫暖
+- M&M「Always open」→ 隨時陪伴
+- Volvo → 安全感
+- Apple → 創意自我表達
+
+每個方向必須:
+- label:<10 字情感標籤
+- summary:<60 字,描述客戶接觸到品牌時的內心感受
+- next_step:<30 字,告訴學員「這個方向要靠什麼接觸點傳達」
+- framework_link:對應 M.V.P 哪一段、或同理心地圖 / N.P.S 框架
+
+回傳 JSON,結構嚴格如下,不要任何其他文字:
+{ "directions": [{ "label": "...", "summary": "...", "next_step": "...", "framework_link": "..." }, { ... }, { ... }] }`,
+  },
+
+  m2_product: {
+    requiredVars: ['market_target', 'vision_emotion'],
+    expectedShape:
+      '{ "directions": [{ "label": "...", "summary": "...", "next_step": "...", "framework_link": "..." }, ...] }',
+    template: `學員的目標市場:{{market_target}}
+學員的感性溝通(品牌情感):{{vision_emotion}}
+
+請給 3 個理性差異化的方向(功能 / 特殊性 / 優勢),每個方向必須具體、可量化。
+
+參考工作坊的 Q.C 框架:
+- Quantify(量化支持):18 摺痕、14 小時熬煮、99.9% 純度
+- Celebrity(名人 / 形象代表):吳寶春+麵包、海底撈+服務
+
+每個方向必須:
+- label:<10 字差異點
+- summary:<60 字,具體寫出可量化的差異(數字、規格、流程、認證)
+- next_step:<30 字,告訴學員「這個差異要怎麼證明 / 包裝」
+- framework_link:對應 Q.C 量化或名人、M.V.P P 段、或客戶經營旅程
+
+回傳 JSON,結構嚴格如下,不要任何其他文字:
+{ "directions": [{ "label": "...", "summary": "...", "next_step": "...", "framework_link": "..." }, { ... }, { ... }] }`,
+  },
+
+  m2_positioning: {
+    requiredVars: ['market_target', 'vision_emotion', 'product_rational'],
+    expectedShape: '{ "versions": ["...", "...", "..."] }',
+    template: `學員的 M.V.P:
+- M(目標市場):{{market_target}}
+- V(感性溝通):{{vision_emotion}}
+- P(理性差異):{{product_rational}}
+
+請依以下句型,生成 3 個版本的定位句(短 / 中 / 長):
+
+句型:「對於 ___ 來說,與 ___ 相比,我們更 ___、___、___」
+
+- 短版本:不超過 30 字,只填 1 個關鍵差異
+- 中版本:40-60 字,填 2-3 個差異
+- 長版本:60-90 字,填 3 個差異 + 加上情感呼應
+
+不要使用禁用詞(賦能 / 共創 / 生態系 / 閉環 / 賽道 / 乾貨 / 落地 / 賦予 / 打造)。
+
+回傳 JSON,結構嚴格如下,不要任何其他文字:
+{ "versions": ["短版本句子", "中版本句子", "長版本句子"] }`,
+  },
+
   m3_pain_points: {
     requiredVars: [
       'role_label',

@@ -2,6 +2,10 @@
 // Never sends raw prompts — server holds the templates.
 
 export type PromptKey =
+  | 'm1_network'
+  | 'm2_vision'
+  | 'm2_product'
+  | 'm2_positioning'
   | 'm3_pain_points'
   | 'm3_conflict_analysis'
   | 'm4_questions'
@@ -27,6 +31,10 @@ export interface ConflictAnalysisResponse {
   conflicts: string
   excited_resistant: string
   attack_path: string
+}
+
+export interface PositioningResponse {
+  versions: string[]
 }
 
 interface ApiSuccess<T> {
@@ -77,6 +85,16 @@ async function callApi<T>(
 }
 
 export const ai = {
+  // M1
+  network: (vars: Record<string, string>) =>
+    callApi<DirectionsResponse>('m1_network', vars),
+  // M2
+  vision: (vars: Record<string, string>) =>
+    callApi<DirectionsResponse>('m2_vision', vars),
+  product: (vars: Record<string, string>) =>
+    callApi<DirectionsResponse>('m2_product', vars),
+  positioning: (vars: Record<string, string>) =>
+    callApi<PositioningResponse>('m2_positioning', vars),
   // M3
   painPoints: (vars: Record<string, string>) =>
     callApi<DirectionsResponse>('m3_pain_points', vars),

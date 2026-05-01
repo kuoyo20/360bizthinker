@@ -6,6 +6,11 @@ import type {
   EmpathyBasic,
   EmpathyMap,
   IndustryTemplate,
+  M1CellKey,
+  M1ListKey,
+  M1State,
+  M2FieldKey,
+  M2State,
   M3Analysis,
   M3State,
   M4State,
@@ -60,10 +65,41 @@ const initialM3: M3State = {
   analysis: { conflicts: '', excited_resistant: '', attack_path: '' },
 }
 
+const emptyCell = () => ({ existing: '', opportunity: '' })
+
+const initialM1: M1State = {
+  career_downstream: emptyCell(),
+  career_upstream: emptyCell(),
+  career_adjacent: emptyCell(),
+  edu_school: emptyCell(),
+  edu_club: emptyCell(),
+  edu_training: emptyCell(),
+  most_contacted_5: '',
+  go_to_help_5: '',
+  role_models: '',
+}
+
+const initialM2: M2State = {
+  market_target: '',
+  vision_emotion: '',
+  product_rational: '',
+  qc_quantify: '',
+  qc_celebrity: '',
+  positioning_statement: '',
+}
+
 type RoleLevel = 'manager' | 'senior' | 'junior'
 type ContactField = 'name' | 'attitude'
 
 interface StoreActions {
+  // M1
+  setM1Cell: (cell: M1CellKey, side: 'existing' | 'opportunity', value: string) => void
+  setM1List: (list: M1ListKey, value: string) => void
+
+  // M2
+  setM2Field: (field: M2FieldKey, value: string) => void
+
+  // M4
   setM4Field: (stage: StageId, dim: DimensionKey, value: string) => void
   setEmotionPeak: (key: keyof M4State['emotion_peaks'], value: string) => void
 
@@ -89,8 +125,10 @@ interface StoreActions {
   setM3Analysis: (analysis: M3Analysis) => void
 
   reset: () => void
-  getM4Completion: () => { filled: number; total: number }
+  getM1Completion: () => { filled: number; total: number }
+  getM2Completion: () => { filled: number; total: number }
   getM3Completion: () => { filled: number; total: number }
+  getM4Completion: () => { filled: number; total: number }
   exportState: () => RootState
 }
 
@@ -98,16 +136,58 @@ export type Store = RootState & StoreActions
 
 const initialState: RootState = {
   meta: { lastSaved: null, userName: '' },
+  m1_network: initialM1,
+  m2_mvp: initialM2,
   m3_empathy: initialM3,
   m4_journey: initialM4,
 }
 
 const stamp = () => new Date().toISOString()
 
+const M1_CELL_KEYS: M1CellKey[] = [
+  'career_downstream',
+  'career_upstream',
+  'career_adjacent',
+  'edu_school',
+  'edu_club',
+  'edu_training',
+]
+
+const M2_REQUIRED_FIELDS: M2FieldKey[] = [
+  'market_target',
+  'vision_emotion',
+  'product_rational',
+  'qc_quantify',
+  'positioning_statement',
+]
+
 export const useStore = create<Store>()(
   persist(
     (set, get) => ({
       ...initialState,
+
+      // ---------- M1 ----------
+      setM1Cell: (cell, side, value) =>
+        set((state) => ({
+          meta: { ...state.meta, lastSaved: stamp() },
+          m1_network: {
+            ...state.m1_network,
+            [cell]: { ...state.m1_network[cell], [side]: value },
+          },
+        })),
+
+      setM1List: (list, value) =>
+        set((state) => ({
+          meta: { ...state.meta, lastSaved: stamp() },
+          m1_network: { ...state.m1_network, [list]: value },
+        })),
+
+      // ---------- M2 ----------
+      setM2Field: (field, value) =>
+        set((state) => ({
+          meta: { ...state.meta, lastSaved: stamp() },
+          m2_mvp: { ...state.m2_mvp, [field]: value },
+        })),
 
       // ---------- M4 ----------
       setM4Field: (stage, dim, value) =>
@@ -135,7 +215,6 @@ export const useStore = create<Store>()(
       applyM3Template: (template) =>
         set((state) => {
           const def = INDUSTRY_TEMPLATES[template]
-          // clone to avoid mutating constant
           const roles: OrgRole[] = def.roles.map((r) => ({
             ...r,
             manager: { ...r.manager },
@@ -270,6 +349,30 @@ export const useStore = create<Store>()(
 
       reset: () => set({ ...initialState }),
 
+      // ---------- Completion ----------
+      getM1Completion: () => {
+        const m1 = get().m1_network
+        const total = 9 // 6 cells + 3 lists
+        let filled = 0
+        for (const k of M1_CELL_KEYS) {
+          if (m1[k].existing.trim() || m1[k].opportunity.trim()) filled += 1
+        }
+        if (m1.most_contacted_5.trim()) filled += 1
+        if (m1.go_to_help_5.trim()) filled += 1
+        if (m1.role_models.trim()) filled += 1
+        return { filled, total }
+      },
+
+      getM2Completion: () => {
+        const m2 = get().m2_mvp
+        const total = M2_REQUIRED_FIELDS.length
+        let filled = 0
+        for (const f of M2_REQUIRED_FIELDS) {
+          if (m2[f].trim()) filled += 1
+        }
+        return { filled, total }
+      },
+
       getM4Completion: () => {
         const stages = get().m4_journey.stages
         const total = 12
@@ -288,32 +391,35 @@ export const useStore = create<Store>()(
         for (const role of m3.roles) {
           const e = m3.empathy_maps[role.id]
           if (!e) continue
-          // count as "filled" if pain AND gain both have content
           if (e.pain.trim() && e.gain.trim()) filled += 1
         }
         return { filled, total }
       },
 
       exportState: () => {
-        const { meta, m3_empathy, m4_journey } = get()
-        return { meta, m3_empathy, m4_journey }
+        const { meta, m1_network, m2_mvp, m3_empathy, m4_journey } = get()
+        return { meta, m1_network, m2_mvp, m3_empathy, m4_journey }
       },
     }),
     {
       name: STORAGE_KEY,
-      version: 2,
+      version: 3,
       partialize: (state) => ({
         meta: state.meta,
+        m1_network: state.m1_network,
+        m2_mvp: state.m2_mvp,
         m3_empathy: state.m3_empathy,
         m4_journey: state.m4_journey,
       }),
       migrate: (persistedState, fromVersion) => {
-        // v1 → v2 added m3_empathy
-        const state = persistedState as Partial<RootState>
-        if (fromVersion < 2 && !state.m3_empathy) {
-          return { ...state, m3_empathy: initialM3 } as RootState
+        const state = (persistedState ?? {}) as Partial<RootState>
+        const next: Partial<RootState> = { ...state }
+        if (fromVersion < 2 && !next.m3_empathy) next.m3_empathy = initialM3
+        if (fromVersion < 3) {
+          if (!next.m1_network) next.m1_network = initialM1
+          if (!next.m2_mvp) next.m2_mvp = initialM2
         }
-        return state as RootState
+        return next as RootState
       },
     },
   ),

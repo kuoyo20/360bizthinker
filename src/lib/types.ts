@@ -88,8 +88,52 @@ export interface M3State {
   analysis: M3Analysis
 }
 
+// ---------------- M1 人脈三歷 ----------------
+
+export interface M1Cell {
+  existing: string
+  opportunity: string
+}
+
+export interface M1State {
+  career_downstream: M1Cell
+  career_upstream: M1Cell
+  career_adjacent: M1Cell
+  edu_school: M1Cell
+  edu_club: M1Cell
+  edu_training: M1Cell
+  most_contacted_5: string
+  go_to_help_5: string
+  role_models: string
+}
+
+export type M1CellKey =
+  | 'career_downstream'
+  | 'career_upstream'
+  | 'career_adjacent'
+  | 'edu_school'
+  | 'edu_club'
+  | 'edu_training'
+
+export type M1ListKey = 'most_contacted_5' | 'go_to_help_5' | 'role_models'
+
+// ---------------- M2 M.V.P ----------------
+
+export interface M2State {
+  market_target: string
+  vision_emotion: string
+  product_rational: string
+  qc_quantify: string
+  qc_celebrity: string
+  positioning_statement: string
+}
+
+export type M2FieldKey = keyof M2State
+
 export interface RootState {
   meta: AppMeta
+  m1_network: M1State
+  m2_mvp: M2State
   m3_empathy: M3State
   m4_journey: M4State
 }

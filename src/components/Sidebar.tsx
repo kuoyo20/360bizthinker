@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
 export interface ProgressMap {
+  m1?: { filled: number; total: number }
+  m2?: { filled: number; total: number }
   m3?: { filled: number; total: number }
   m4?: { filled: number; total: number }
 }
@@ -45,7 +47,7 @@ export function Sidebar({ progress, onExport, onReset }: SidebarProps) {
         </div>
 
         {MODULES.map((m) => {
-          const p = progress[m.id as 'm3' | 'm4']
+          const p = progress[m.id as 'm1' | 'm2' | 'm3' | 'm4']
           const showProgress = !!(p && p.filled > 0)
           return m.enabled ? (
             <NavLink
