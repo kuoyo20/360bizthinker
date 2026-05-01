@@ -1,0 +1,109 @@
+// Frontend AI client. Sends { promptKey, vars } to /api/ai (proxy).
+// Never sends raw prompts — server holds the templates.
+
+export type PromptKey =
+  | 'm1_network'
+  | 'm2_vision'
+  | 'm2_product'
+  | 'm2_positioning'
+  | 'm3_pain_points'
+  | 'm3_conflict_analysis'
+  | 'm4_questions'
+  | 'm4_outputs'
+  | 'm4_peaks'
+
+export interface AIDirection {
+  label: string
+  summary: string
+  next_step: string
+  framework_link: string
+}
+
+export interface QuestionsResponse {
+  questions: string[]
+}
+
+export interface DirectionsResponse {
+  directions: AIDirection[]
+}
+
+export interface ConflictAnalysisResponse {
+  conflicts: string
+  excited_resistant: string
+  attack_path: string
+}
+
+export interface PositioningResponse {
+  versions: string[]
+}
+
+interface ApiSuccess<T> {
+  ok: true
+  promptKey: PromptKey
+  data: T
+  usage?: { input_tokens: number; output_tokens: number }
+}
+
+interface ApiError {
+  ok: false
+  error: string
+  detail?: string
+}
+
+export class AIError extends Error {
+  detail?: string
+  status: number
+  constructor(error: string, detail: string | undefined, status: number) {
+    super(error)
+    this.name = 'AIError'
+    this.detail = detail
+    this.status = status
+  }
+}
+
+async function callApi<T>(
+  promptKey: PromptKey,
+  vars: Record<string, string>,
+): Promise<ApiSuccess<T>> {
+  const res = await fetch('/api/ai', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ promptKey, vars }),
+  })
+
+  let json: ApiSuccess<T> | ApiError
+  try {
+    json = (await res.json()) as ApiSuccess<T> | ApiError
+  } catch (e) {
+    throw new AIError('invalid_server_response', (e as Error).message, res.status)
+  }
+
+  if (!json.ok) {
+    throw new AIError(json.error, json.detail, res.status)
+  }
+  return json
+}
+
+export const ai = {
+  // M1
+  network: (vars: Record<string, string>) =>
+    callApi<DirectionsResponse>('m1_network', vars),
+  // M2
+  vision: (vars: Record<string, string>) =>
+    callApi<DirectionsResponse>('m2_vision', vars),
+  product: (vars: Record<string, string>) =>
+    callApi<DirectionsResponse>('m2_product', vars),
+  positioning: (vars: Record<string, string>) =>
+    callApi<PositioningResponse>('m2_positioning', vars),
+  // M3
+  painPoints: (vars: Record<string, string>) =>
+    callApi<DirectionsResponse>('m3_pain_points', vars),
+  conflictAnalysis: (vars: Record<string, string>) =>
+    callApi<ConflictAnalysisResponse>('m3_conflict_analysis', vars),
+  // M4
+  questions: (vars: Record<string, string>) =>
+    callApi<QuestionsResponse>('m4_questions', vars),
+  outputs: (vars: Record<string, string>) =>
+    callApi<DirectionsResponse>('m4_outputs', vars),
+  peaks: (vars: Record<string, string>) => callApi<DirectionsResponse>('m4_peaks', vars),
+}

@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Aligned with Miracle X CI — deep forest green #21362C as primary,
+       warm beige paper as background. Kept gold accent to maintain warmth. */
+    --background: 40 33% 97%;
+    --foreground: 156 19% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 156 19% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 156 19% 12%;
+    --primary: 153 25% 17%;
+    --primary-foreground: 40 33% 97%;
+    --secondary: 145 11% 91%;
+    --secondary-foreground: 153 25% 17%;
+    --muted: 40 12% 95%;
+    --muted-foreground: 145 5% 45%;
+    --accent: 145 11% 91%;
+    --accent-foreground: 153 25% 17%;
+    --destructive: 0 49% 33%;
+    --destructive-foreground: 40 33% 97%;
+    --border: 40 14% 89%;
+    --input: 40 14% 89%;
+    --ring: 153 25% 17%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-paper text-ink-primary font-sans antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-serif;
+  }
+}
