@@ -20,7 +20,12 @@ export const SYSTEM_PROMPT = `你是 Yo 的銷售策略助手,協助學員應用
 5. 回傳格式為 JSON,結構固定 — 不要包在 markdown code block 裡,直接吐 JSON
 6. 如果學員尚未填寫某些上下文(顯示為「尚未填寫」),請用通用銷售情境給建議,不要捏造學員的產品或客戶細節`
 
-export type PromptKey = 'm4_questions' | 'm4_outputs' | 'm4_peaks'
+export type PromptKey =
+  | 'm3_pain_points'
+  | 'm3_conflict_analysis'
+  | 'm4_questions'
+  | 'm4_outputs'
+  | 'm4_peaks'
 
 interface PromptDef {
   template: string
@@ -29,6 +34,68 @@ interface PromptDef {
 }
 
 export const PROMPTS: Record<PromptKey, PromptDef> = {
+  m3_pain_points: {
+    requiredVars: [
+      'role_label',
+      'industry_label',
+      'role_basic',
+      'role_think_feel',
+      'other_roles',
+    ],
+    expectedShape:
+      '{ "directions": [{ "label": "...", "summary": "...", "next_step": "...", "framework_link": "..." }, ...] }',
+    template: `學員正在填寫角色:{{role_label}}
+產業:{{industry_label}}
+基本資料 / 內心想法:
+{{role_basic}}
+{{role_think_feel}}
+
+組織內其他角色:
+{{other_roles}}
+
+請根據此角色的職位特性,給 3 個常見的工作痛點方向(內心恐懼 / 沮喪 / 阻礙前進)。
+每個方向必須:
+- label:<10 字
+- summary:<60 字,具體到該職位的日常情境
+- next_step:<30 字,告訴學員「銷售方可以怎麼用這個痛點切入」
+- framework_link:對應到工作坊的同理心地圖、M.V.P 哪一段、或 Q.C 框架
+
+重點:
+- 必須與「組織內其他角色」的痛點有差異化(避免三個角色講同一件事)
+- 必須是「銷售方可解決」的痛點(否則填了也沒用)
+
+回傳 JSON,結構嚴格如下,不要任何其他文字:
+{ "directions": [{ "label": "...", "summary": "...", "next_step": "...", "framework_link": "..." }, { ... }, { ... }] }`,
+  },
+
+  m3_conflict_analysis: {
+    requiredVars: ['industry_label', 'roles_summary', 'm2_mvp_summary'],
+    expectedShape:
+      '{ "conflicts": "...", "excited_resistant": "...", "attack_path": "..." }',
+    template: `產業:{{industry_label}}
+
+學員已填寫的角色與痛點 / 爽點:
+{{roles_summary}}
+
+學員的提案(來自 M2.M.V.P):
+{{m2_mvp_summary}}
+
+請輸出 3 段分析,每段 100 字以內:
+
+1. **conflicts(角色間利益衝突)**:這幾個角色之間最可能的核心矛盾是什麼?
+   舉例格式:「[角色 A] 想要 X,[角色 B] 想要 Y,衝突點在於 Z」
+   如果只有 1 個角色或衝突不明顯,寫「角色數不足以分析衝突,建議至少填 2-3 個關鍵角色」
+
+2. **excited_resistant(誰最興奮、誰最抗拒)**:基於學員的提案內容,
+   哪個角色最會買單、為什麼?哪個角色會最抗拒、為什麼?
+
+3. **attack_path(攻擊路徑建議)**:應該先攻誰、後攻誰、為什麼這個順序?
+   要呼應學員的提案優勢與各角色的痛點。
+
+不要包在 markdown code block 裡。回傳 JSON 嚴格如下:
+{ "conflicts": "...", "excited_resistant": "...", "attack_path": "..." }`,
+  },
+
   m4_questions: {
     requiredVars: [
       'stage_label',

@@ -6,7 +6,15 @@ import { useStore } from '@/store/useStore'
 import { cn } from '@/lib/utils'
 
 export function Overview() {
+  const m3Progress = useStore((s) => s.getM3Completion())
   const m4Progress = useStore((s) => s.getM4Completion())
+
+  const progressFor: Record<'m1' | 'm2' | 'm3' | 'm4', { filled: number; total: number } | null> = {
+    m1: null,
+    m2: null,
+    m3: m3Progress,
+    m4: m4Progress,
+  }
 
   return (
     <div className="px-10 py-12 max-w-5xl">
@@ -19,8 +27,8 @@ export function Overview() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {MODULES.map((m) => {
-          const isM4 = m.id === 'm4'
-          const progressPct = isM4 ? Math.round((m4Progress.filled / m4Progress.total) * 100) : 0
+          const p = progressFor[m.id]
+          const progressPct = p && p.total > 0 ? Math.round((p.filled / p.total) * 100) : 0
 
           const card = (
             <article
@@ -46,7 +54,7 @@ export function Overview() {
 
                   <div className="flex items-center justify-between">
                     {m.enabled ? (
-                      isM4 && m4Progress.filled > 0 ? (
+                      p && p.filled > 0 ? (
                         <div className="flex items-center gap-2">
                           <div className="h-1.5 w-24 bg-brand-light rounded-full overflow-hidden">
                             <div
@@ -55,7 +63,7 @@ export function Overview() {
                             />
                           </div>
                           <span className="font-mono text-xs text-ink-muted">
-                            {m4Progress.filled}/{m4Progress.total}
+                            {p.filled}/{p.total}
                           </span>
                         </div>
                       ) : (
@@ -84,7 +92,7 @@ export function Overview() {
       </div>
 
       <footer className="mt-16 text-center text-xs text-ink-muted font-mono">
-        Sales Strategist · v0.1 · Yo Workshop
+        Sales Strategist · v0.3 · Yo Workshop
       </footer>
     </div>
   )

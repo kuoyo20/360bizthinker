@@ -36,7 +36,7 @@ export const MODULES: ModuleDef[] = [
     description: 'KEYMAN 組織 + 各角色同理心',
     path: '/m3',
     icon: HeartHandshake,
-    enabled: false,
+    enabled: true,
   },
   {
     id: 'm4',

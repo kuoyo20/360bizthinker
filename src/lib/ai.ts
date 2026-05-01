@@ -1,7 +1,12 @@
 // Frontend AI client. Sends { promptKey, vars } to /api/ai (proxy).
 // Never sends raw prompts — server holds the templates.
 
-export type PromptKey = 'm4_questions' | 'm4_outputs' | 'm4_peaks'
+export type PromptKey =
+  | 'm3_pain_points'
+  | 'm3_conflict_analysis'
+  | 'm4_questions'
+  | 'm4_outputs'
+  | 'm4_peaks'
 
 export interface AIDirection {
   label: string
@@ -16,6 +21,12 @@ export interface QuestionsResponse {
 
 export interface DirectionsResponse {
   directions: AIDirection[]
+}
+
+export interface ConflictAnalysisResponse {
+  conflicts: string
+  excited_resistant: string
+  attack_path: string
 }
 
 interface ApiSuccess<T> {
@@ -66,6 +77,12 @@ async function callApi<T>(
 }
 
 export const ai = {
+  // M3
+  painPoints: (vars: Record<string, string>) =>
+    callApi<DirectionsResponse>('m3_pain_points', vars),
+  conflictAnalysis: (vars: Record<string, string>) =>
+    callApi<ConflictAnalysisResponse>('m3_conflict_analysis', vars),
+  // M4
   questions: (vars: Record<string, string>) =>
     callApi<QuestionsResponse>('m4_questions', vars),
   outputs: (vars: Record<string, string>) =>

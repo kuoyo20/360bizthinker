@@ -4,13 +4,18 @@ import { MODULES } from '@/lib/modules'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
+export interface ProgressMap {
+  m3?: { filled: number; total: number }
+  m4?: { filled: number; total: number }
+}
+
 interface SidebarProps {
-  m4Progress: { filled: number; total: number }
+  progress: ProgressMap
   onExport: () => void
   onReset: () => void
 }
 
-export function Sidebar({ m4Progress, onExport, onReset }: SidebarProps) {
+export function Sidebar({ progress, onExport, onReset }: SidebarProps) {
   return (
     <aside className="w-60 shrink-0 border-r border-line-light bg-paper-card flex flex-col">
       <div className="px-5 py-6 border-b border-line-light">
@@ -40,8 +45,8 @@ export function Sidebar({ m4Progress, onExport, onReset }: SidebarProps) {
         </div>
 
         {MODULES.map((m) => {
-          const isM4 = m.id === 'm4'
-          const showProgress = isM4 && m4Progress.filled > 0
+          const p = progress[m.id as 'm3' | 'm4']
+          const showProgress = !!(p && p.filled > 0)
           return m.enabled ? (
             <NavLink
               key={m.id}
@@ -58,9 +63,9 @@ export function Sidebar({ m4Progress, onExport, onReset }: SidebarProps) {
               <span className="font-mono text-xs text-ink-muted">{m.number}</span>
               <m.icon className="size-4" />
               <span className="flex-1 truncate">{m.label}</span>
-              {showProgress && (
+              {showProgress && p && (
                 <Badge variant="secondary" className="text-[10px] px-1.5">
-                  {m4Progress.filled}/{m4Progress.total}
+                  {p.filled}/{p.total}
                 </Badge>
               )}
             </NavLink>

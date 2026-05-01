@@ -30,8 +30,67 @@ export interface AppMeta {
   userName: string
 }
 
+export type Attitude = '++' | '+' | '-' | ''
+
+export type IndustryTemplate = 'restaurant' | 'beverage_chain' | 'manufacturing' | 'custom'
+
+export interface AttitudePerson {
+  name: string
+  attitude: Attitude
+}
+
+export interface OrgRole {
+  id: string
+  label: string
+  is_keyman: boolean
+  manager: AttitudePerson
+  senior: AttitudePerson
+  junior: AttitudePerson
+}
+
+export interface OrgBoss {
+  name: string
+  attitude: Attitude
+}
+
+export interface EmpathyBasic {
+  name: string
+  gender: string
+  age: string
+  position: string
+  work_content: string
+  location: string
+  family: string
+  income: string
+}
+
+export interface EmpathyMap {
+  basic: EmpathyBasic
+  think_feel: string
+  hear: string
+  see: string
+  say_do: string
+  pain: string
+  gain: string
+}
+
+export interface M3Analysis {
+  conflicts: string
+  excited_resistant: string
+  attack_path: string
+}
+
+export interface M3State {
+  industry_template: IndustryTemplate
+  boss: OrgBoss
+  roles: OrgRole[]
+  empathy_maps: Record<string, EmpathyMap>
+  analysis: M3Analysis
+}
+
 export interface RootState {
   meta: AppMeta
+  m3_empathy: M3State
   m4_journey: M4State
 }
 

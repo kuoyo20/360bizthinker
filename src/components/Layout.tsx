@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import { Sidebar } from './Sidebar'
+import { Sidebar, type ProgressMap } from './Sidebar'
 import { ResetDialog } from './ResetDialog'
 import { useStore } from '@/store/useStore'
 
 export function Layout() {
+  const m3Progress = useStore((s) => s.getM3Completion())
   const m4Progress = useStore((s) => s.getM4Completion())
   const reset = useStore((s) => s.reset)
   const [resetOpen, setResetOpen] = useState(false)
+
+  const progress: ProgressMap = { m3: m3Progress, m4: m4Progress }
 
   const handleExport = () => {
     const state = useStore.getState().exportState()
@@ -23,7 +26,7 @@ export function Layout() {
   return (
     <div className="flex min-h-screen bg-paper">
       <Sidebar
-        m4Progress={m4Progress}
+        progress={progress}
         onExport={handleExport}
         onReset={() => setResetOpen(true)}
       />
