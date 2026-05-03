@@ -8,6 +8,7 @@ import Onboarding from "@/pages/Onboarding";
 import Home from "@/pages/Home";
 import NewCompany from "@/pages/companies/NewCompany";
 import CompanyDetail from "@/pages/companies/CompanyDetail";
+import BrandOSPage from "@/pages/companies/modules/BrandOSPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import CohortList from "@/pages/admin/CohortList";
 import CohortDetail from "@/pages/admin/CohortDetail";
@@ -50,6 +51,14 @@ export default function App() {
           element={
             <RequireAuth>
               <CompanyDetail />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/companies/:id/brand_os"
+          element={
+            <RequireAuth>
+              <BrandOSPage />
             </RequireAuth>
           }
         />

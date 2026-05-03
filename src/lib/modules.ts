@@ -48,7 +48,7 @@ export const MODULES: Record<ModuleType, ModuleMeta> = {
     group: "品牌力",
     description: "金字塔 + Soul + 同理心地圖",
     order: 5,
-    external: true,
+    external: false,
     externalUrl: "https://consumer-insight-map.vercel.app",
   },
   strategy: {
