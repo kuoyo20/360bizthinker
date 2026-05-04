@@ -13,20 +13,27 @@ interface ModuleStatus {
 }
 
 function useCompanyModules(companyId: string | undefined) {
-  const { activeWorkspace } = useUserContext();
+  const { activeWorkspace, isCoach } = useUserContext();
   return useQuery({
-    queryKey: ["company-modules", companyId, activeWorkspace?.id],
+    queryKey: ["company-modules", companyId, activeWorkspace?.id, isCoach],
     enabled: !!companyId && !!activeWorkspace,
     queryFn: async (): Promise<ModuleStatus[]> => {
-      const { data: access, error: accessErr } = await supabase
-        .from("student_module_access")
-        .select("module_type, is_enabled");
-      if (accessErr) throw accessErr;
-      const enabledSet = new Set(
-        (access ?? [])
-          .filter((a) => a.is_enabled)
-          .map((a) => a.module_type as ModuleType),
-      );
+      // Admin/coach have all modules unlocked by virtue of role.
+      // Students gated by student_module_access entries.
+      let enabledSet: Set<ModuleType>;
+      if (isCoach) {
+        enabledSet = new Set(MODULE_TYPES);
+      } else {
+        const { data: access, error: accessErr } = await supabase
+          .from("student_module_access")
+          .select("module_type, is_enabled");
+        if (accessErr) throw accessErr;
+        enabledSet = new Set(
+          (access ?? [])
+            .filter((a) => a.is_enabled)
+            .map((a) => a.module_type as ModuleType),
+        );
+      }
 
       const { data: dataRows, error: mdErr } = await supabase
         .from("module_data")
