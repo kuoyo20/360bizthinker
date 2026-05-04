@@ -114,13 +114,17 @@ Deno.serve(async (req: Request) => {
           .single();
         if (stuErr || !student) throw new Error("students row missing");
 
-        // Add to workspace as student (idempotent)
-        await admin.from("workspace_members").upsert({
-          workspace_id: cohort.workspace_id,
-          user_id: userId,
-          role: "student",
-          invited_by: user.id,
-        });
+        // Add to workspace as student — but DO NOT downgrade existing
+        // admin/coach if they were already members.
+        await admin.from("workspace_members").upsert(
+          {
+            workspace_id: cohort.workspace_id,
+            user_id: userId,
+            role: "student",
+            invited_by: user.id,
+          },
+          { onConflict: "workspace_id,user_id", ignoreDuplicates: true },
+        );
 
         // Add to cohort
         await admin.from("cohort_students").upsert({
