@@ -12,6 +12,7 @@ import BrandOSPage from "@/pages/companies/modules/BrandOSPage";
 import AssessmentPage from "@/pages/companies/modules/AssessmentPage";
 import AssessmentResultPage from "@/pages/companies/modules/AssessmentResultPage";
 import CapabilityEvalPage from "@/pages/companies/modules/CapabilityEvalPage";
+import StrategyPage from "@/pages/companies/modules/StrategyPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import CohortList from "@/pages/admin/CohortList";
 import CohortDetail from "@/pages/admin/CohortDetail";
@@ -86,6 +87,14 @@ export default function App() {
           element={
             <RequireAuth>
               <CapabilityEvalPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/companies/:id/strategy"
+          element={
+            <RequireAuth>
+              <StrategyPage />
             </RequireAuth>
           }
         />
