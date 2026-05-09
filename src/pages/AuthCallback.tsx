@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/providers/AuthProvider";
+import { resolvePostLoginRoute } from "@/lib/postLoginRedirect";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
@@ -21,25 +21,13 @@ export default function AuthCallback() {
 
     (async () => {
       setStage("檢查你的工作空間…");
-
-      const { data: memberships, error: memErr } = await supabase
-        .from("workspace_members")
-        .select("workspace_id, role")
-        .limit(1);
-
+      const { route, error: routeErr } = await resolvePostLoginRoute();
       if (cancelled) return;
-      if (memErr) {
-        setError(`讀取會員資訊失敗：${memErr.message}`);
+      if (routeErr || !route) {
+        setError(routeErr ?? "登入後找不到目的地，請重試");
         return;
       }
-
-      if (memberships && memberships.length > 0) {
-        const role = memberships[0].role;
-        navigate(role === "student" ? "/home" : "/admin", { replace: true });
-        return;
-      }
-
-      navigate("/onboarding", { replace: true });
+      navigate(route, { replace: true });
     })();
 
     return () => {
